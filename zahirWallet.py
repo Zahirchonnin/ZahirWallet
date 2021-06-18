@@ -433,11 +433,7 @@ class ZahirWallet(titleBar):
                 self.Main.accounts.addItem(acc_name)
             
             self.Main.account_address.setText(self.account.address)
-            balance = self.w3.fromWei(
-                self.w3.eth.get_balance(self.account.address), 
-                'ether'
-                )
-            self.Main.balance.setText(str(balance))
+            self.Main.balance.setText(str(self.w3.eth.get_balance(self.account.address)))
         except :
             self.msg.information(
                 self, 'Error', 'Invalid private key',
@@ -509,8 +505,10 @@ class ZahirWallet(titleBar):
             abi = self.AddToken.abi.toPlainText()
             contract = self.w3.eth.contract(address=address, abi=abi)
             contract.functions.name().call()
-            if str(contract.all_functions()) == '[<Function balanceOf(address)>, <Function transfer(address,uint256)>, <Function transferFrom(address,address,uint256)>, <Function approve(address,uint256)>, <Function allowance(address,address)>, <Function name()>, <Function symbol()>, <Function totalSupply()>, <Function decimals()>]':
-                self.AddToken.add.setEnabled(True)
+            contract.functions.symbol().call()
+            contract.functions.totalSupply().call()
+            contract.functions.balanceOf(self.Main.account_address.text()).call()
+            self.AddToken.add.setEnabled(True)
         except:
             pass
     
@@ -560,9 +558,9 @@ class ZahirWallet(titleBar):
         
     def applyMethod(self):
         token = self._excutor.property('token')
-        self._excutor.property('balance').setText(token.balanceOf(
-            self.Main.account_address.text()
-        ))
+        self._excutor.property('balance').setText(
+            token.balanceOf(self.Main.account_address.text())
+            )
 
         _from = self.Excutor._from.text()
         _to = self.Excutor._to.text()
@@ -586,13 +584,16 @@ class ZahirWallet(titleBar):
             rpc = Web3.WebsocketProvider(rpcUrl)
         
         else:
-            self.msg.information(self, 'Unknow rpc.',
+            return self.msg.information(self, 'Unknow rpc.',
             'Could not Identify this rpc', self.msg.Ok, self.msg.Ok
             )
         if not rpc in rpcs: self.RPCUrl.addItem(rpcUrl)
         self.w3 = Web3(rpc)
         if self.w3.isConnected():
             self.rpc = rpc
+            self.Main.balance.setText(str(
+                self.w3.eth.get_balance(self.Main.account_address.text())
+            ))
             self.frame.hide()
         
         else:
