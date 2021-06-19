@@ -38,7 +38,8 @@ class ERC20Token:
             self.makeTXN(prvKey, tx)
             return "Transaction succeeded!"
         
-        except :
+        except Exception as e:
+            print(e)
             return "Insufficient balance!"
 
     def transferFrom(self, _owner, _to, _value, _from, prvKey):
@@ -51,7 +52,9 @@ class ERC20Token:
             )
             self.makeTXN(prvKey, tx)
             return "Transaction succeeded!"
-        except :
+        
+        except Exception as e:
+            print(e)
             return "Insufficient balance!"
 
     def approve(self, *args):
@@ -75,6 +78,6 @@ class ERC20Token:
     def excuteMethod(self, method, _owner, _to, _value, _from, prvKey):
         if method == 'totalSupply': return self.methods[method]
         return self.methods[method](
-            _owner, _to, self.w3.toWei(_value, 'ether'), 
+            _owner, _to, _value, 
             _from, prvKey
             )

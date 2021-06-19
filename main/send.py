@@ -90,7 +90,7 @@ class Send(QtWidgets.QWidget):
         self.send.setGeometry(QtCore.QRect(240, 170, 151, 51))
         self.send.setObjectName("send")
         self.label = QtWidgets.QLabel(self.widget)
-        self.label.setGeometry(QtCore.QRect(90, 280, 241, 51))
+        self.label.setGeometry(QtCore.QRect(120, 280, 241, 51))
         font = QtGui.QFont()
         font.setFamily("Open Sans")
         font.setPointSize(20)
